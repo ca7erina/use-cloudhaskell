@@ -57,7 +57,8 @@ worker (manager, workQueue) = do
         [ match $ \n  -> do
             liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] given work: " ++ show n
             send manager (doWork n)
-            liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] finished work."
+            time2 <- liftIO $ getCurrentTime
+            liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] finished work." ++ show time2
             go us -- note the recursion this function is called again!
         , match $ \ () -> do
             time1 <- liftIO $ getCurrentTime
