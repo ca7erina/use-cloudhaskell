@@ -28,6 +28,7 @@ import           Network.Transport.TCP                              (createTrans
 import           PrimeFactors
 import           System.Environment                                 (getArgs)
 import           System.Exit
+import           Data.Time
 
 -- this is the work we get workers to do. It could be anything we want. To keep things simple, we'll calculate the
 -- number of prime factors for the integer passed.
@@ -59,7 +60,8 @@ worker (manager, workQueue) = do
             liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] finished work."
             go us -- note the recursion this function is called again!
         , match $ \ () -> do
-            liftIO $ putStrLn $ "Terminating node: " ++ show us
+            time1 <- liftIO $ getCurrentTime
+            liftIO $ putStrLn $ "Terminating node: " ++ show us ++ show time1
             return ()
         ]
 
@@ -121,6 +123,8 @@ someFunc = do
   case args of
     ["manager", host, port, n] -> do
       putStrLn "Starting Node as Manager"
+      ct <- getCurrentTime
+      print ct
       backend <- initializeBackend host port rtable
       startMaster backend $ \workers -> do
         result <- manager (read n) workers
