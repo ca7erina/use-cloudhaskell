@@ -92,7 +92,7 @@ manager n workers = do
   -- Next, start worker processes on the given cloud haskell nodes. These will start
   -- asking for work from the workQueue thread immediately.
   forM_ workers $ \ nid -> spawn nid ($(mkClosure 'worker) (us, workQueue))
-  liftIO $ putStrLn $ "[Manager] Workers spawned"
+  -- liftIO $ putStrLn $ "[Manager] Workers spawned"
   -- wait for all the results from the workers and return the sum total. Look at the implementation, whcih is not simply
   -- summing integer values, but instead is expecting results from workers.
   sumIntegers (fromIntegral n)
@@ -123,7 +123,7 @@ someFunc = do
 
   case args of
     ["manager", host, port, n] -> do
-      putStrLn "Starting Node as Manager"
+      -- putStrLn "Starting Node as Manager"
       ct <- getCurrentTime
       print ct
       backend <- initializeBackend host port rtable
@@ -133,7 +133,7 @@ someFunc = do
         time1 <- liftIO $ getCurrentTime
         liftIO $ print time1
     ["worker", host, port] -> do
-      putStrLn "Starting Node as Worker"
+      -- putStrLn "Starting Node as Worker"
       backend <- initializeBackend host port rtable
       startSlave backend
     _ -> putStrLn "Bad parameters"
