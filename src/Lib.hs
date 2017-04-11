@@ -43,7 +43,7 @@ worker :: ( ProcessId  -- The processid of the manager (where we send the result
        -> Process ()
 worker (manager, workQueue) = do
     us <- getSelfPid              -- get our process identifier
-    liftIO $ putStrLn $ "Starting worker: " ++ show us
+    -- liftIO $ putStrLn $ "Starting worker: " ++ show us
     go us
   where
     go :: ProcessId -> Process ()
@@ -55,14 +55,14 @@ worker (manager, workQueue) = do
       -- or else we will be sent (). If there is work, do it, otherwise terminate
       receiveWait
         [ match $ \n  -> do
-            liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] given work: " ++ show n
+            -- liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] given work: " ++ show n
             send manager (doWork n)
             time2 <- liftIO $ getCurrentTime
-            liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] finished work." ++ show time2
+            -- liftIO $ putStrLn $ "[Node " ++ (show us) ++ "] finished work." ++ show time2
             go us -- note the recursion this function is called again!
         , match $ \ () -> do
             time1 <- liftIO $ getCurrentTime
-            liftIO $ putStrLn $ "Terminating node: " ++ show us ++ show time1
+            -- liftIO $ putStrLn $ "Terminating node: " ++ show us ++ show time1
             return ()
         ]
 
@@ -130,6 +130,8 @@ someFunc = do
       startMaster backend $ \workers -> do
         result <- manager (read n) workers
         liftIO $ print result
+        time1 <- liftIO $ getCurrentTime
+        liftIO $ print time1
     ["worker", host, port] -> do
       putStrLn "Starting Node as Worker"
       backend <- initializeBackend host port rtable
